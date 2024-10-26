@@ -1,0 +1,483 @@
+name: Autograding Tests
+'on':
+- push
+- workflow_dispatch
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: 1. setup
+      id: 1-setup
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 1. setup
+        command: javac Main.java -encoding utf8
+        input: ''
+        expected-output: ''
+        comparison-method: contains
+        timeout: 1
+        max-score: 0
+    - name: 2.print
+      id: 2-print
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 2.print
+        command: java Main
+        input: "print\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      5    150.50 TRAIN  \r\n102 Rome                 15/05/2021
+          \     7    300.00 BUS    \r\n103 Hamburg              15/09/2021     10
+          \   500.50 PLANE  \r\n104 Helsinki             10/06/2021      3    250.00
+          BOAT   \r\n105 New York             16/08/2021      5   1000.00 PLANE  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 3. find err
+      id: 3-find-err
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 3. find err
+        command: java Main
+        input: "find a\r\nexit"
+        expected-output: wrong price
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 4. find number
+      id: 4-find-number
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 4. find number
+        command: java Main
+        input: "find 280\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      5    150.50 TRAIN  \r\n104 Helsinki
+          \            10/06/2021      3    250.00 BOAT   \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 5. avg
+      id: 5-avg
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 5. avg
+        command: java Main
+        input: "avg\r\nexit"
+        expected-output: average=440.20
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 6. sort
+      id: 6-sort
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 6. sort
+        command: java Main
+        input: "sort\r\nprint\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n102
+          Rome                 15/05/2021      7    300.00 BUS    \r\n104 Helsinki
+          \            10/06/2021      3    250.00 BOAT   \r\n101 Daugavpils           03/07/2021
+          \     5    150.50 TRAIN  \r\n105 New York             16/08/2021      5
+          \  1000.00 PLANE  \r\n103 Hamburg              15/09/2021     10    500.50
+          PLANE  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 7.print2
+      id: 7-print2
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 7.print2
+        command: java Main
+        input: "print\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           07/07/2024      2    100.00 TRAIN  \r\n102 Warsaw               15/05/2025
+          \     7    300.00 BUS    \r\n103 Berlin               12/03/2025      3
+          \   500.50 PLANE  \r\n104 Stockholm            10/06/2026      2    400.00
+          BOAT   \r\n105 New York             16/12/2025      7   1000.00 PLANE  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 8. fing int
+      id: 8-fing-int
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 8. fing int
+        command: java Main
+        input: "find 310\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           07/07/2024      2    100.00 TRAIN  \r\n102 Warsaw               15/05/2025
+          \     7    300.00 BUS    \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 9. find float1
+      id: 9-find-float1
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 9. find float1
+        command: java Main
+        input: "find 450.00\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           07/07/2024      2    100.00 TRAIN  \r\n102 Warsaw               15/05/2025
+          \     7    300.00 BUS    \r\n104 Stockholm            10/06/2026      2
+          \   400.00 BOAT   \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 10. avg
+      id: 10-avg
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 10. avg
+        command: java Main
+        input: "avg\r\nexit"
+        expected-output: average=460.10
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 11. sort 2
+      id: 11-sort-2
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 11. sort 2
+        command: java Main
+        input: "sort\r\nprint\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           07/07/2024      2    100.00 TRAIN  \r\n103 Berlin               12/03/2025
+          \     3    500.50 PLANE  \r\n102 Warsaw               15/05/2025      7
+          \   300.00 BUS    \r\n105 New York             16/12/2025      7   1000.00
+          PLANE  \r\n104 Stockholm            10/06/2026      2    400.00 BOAT   \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 12. del wrong
+      id: 12-del-wrong
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 12. del wrong
+        command: java Main
+        input: "del 100\r\nexit"
+        expected-output: wrong id
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 13. del last
+      id: 13-del-last
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 13. del last
+        command: java Main
+        input: "del 105\r\nprint\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      5    150.50 TRAIN  \r\n102 Rome                 15/05/2021
+          \     7    300.00 BUS    \r\n103 Hamburg              15/09/2021     10
+          \   500.50 PLANE  \r\n104 Helsinki             10/06/2021      3    250.00
+          BOAT   \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 14. del two record
+      id: 14-del-two-record
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 14. del two record
+        command: java Main
+        input: "del 101\r\ndel 103\r\nprint\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n102
+          Rome                 15/05/2021      7    300.00 BUS    \r\n104 Helsinki
+          \            10/06/2021      3    250.00 BOAT   \r\n105 New York             16/08/2021
+          \     5   1000.00 PLANE  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 15. del save
+      id: 15-del-save
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 15. del save
+        command: java Main
+        input: "print\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n102
+          Rome                 15/05/2021      7    300.00 BUS    \r\n104 Helsinki
+          \            10/06/2021      3    250.00 BOAT   \r\n105 New York             16/08/2021
+          \     5   1000.00 PLANE  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 16. add field count
+      id: 16-add-field-count
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 16. add field count
+        command: java Main
+        input: "add 200;rezekne;31/03/2026;3;200\r\nadd 200;rezekne;31/03/2026;3;200;BUS;TRAIN\r\nexit"
+        expected-output: "wrong field count\r\nwrong field count"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 17. add id
+      id: 17-add-id
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 17. add id
+        command: java Main
+        input: "add 101;rezekne;31/03/2026;3;200;BUS\r\nadd 10;rezekne;31/03/2026;3;200;BUS\r\nadd
+          aaa;rezekne;31/03/2026;3;200;BUS\r\nexit"
+        expected-output: "wrong id\r\nwrong id\r\nwrong id"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 19. add date
+      id: 19-add-date
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 19. add date
+        command: java Main
+        input: "add 106;rezekne;32/03/2026;3;200;BUS\r\nadd 106;rezekne;31/13/2026;3;200;BUS\r\nadd
+          106;rezekne;03/2026;3;200;BUS\r\nexit"
+        expected-output: "wrong date\r\nwrong date\r\nwrong date"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 20. add day count
+      id: 20-add-day-count
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 20. add day count
+        command: java Main
+        input: "add 106;rezekne;31/03/2026;x;200;BUS\r\nexit"
+        expected-output: wrong day count
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 21. add price
+      id: 21-add-price
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 21. add price
+        command: java Main
+        input: "add 106;rezekne;31/03/2026;3;x;BUS\r\nexit"
+        expected-output: wrong price
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 22. add vechicle
+      id: 22-add-vechicle
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 22. add vechicle
+        command: java Main
+        input: "add 106;rezekne;31/03/2026;200;200;XXX\r\nexit"
+        expected-output: wrong vehicle
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 23. add one record
+      id: 23-add-one-record
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 23. add one record
+        command: java Main
+        input: "add 106;rezekne;31/03/2026;2;200.5;TRAIN\r\nprint\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      5    150.50 TRAIN  \r\n102 Rome                 15/05/2021
+          \     7    300.00 BUS    \r\n103 Hamburg              15/09/2021     10
+          \   500.50 PLANE  \r\n104 Helsinki             10/06/2021      3    250.00
+          BOAT   \r\n105 New York             16/08/2021      5   1000.00 PLANE  \r\n106
+          Rezekne              31/03/2026      2    200.50 TRAIN  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 24. add two records save
+      id: 24-add-two-records-save
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 24. add two records save
+        command: java Main
+        input: "add 107;kuldiga;01/03/2026;4;150;BUS\r\nadd 108;LIEPAJA;01/03/2026;4;150;BOAT\r\nprint\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      5    150.50 TRAIN  \r\n102 Rome                 15/05/2021
+          \     7    300.00 BUS    \r\n103 Hamburg              15/09/2021     10
+          \   500.50 PLANE  \r\n104 Helsinki             10/06/2021      3    250.00
+          BOAT   \r\n105 New York             16/08/2021      5   1000.00 PLANE  \r\n106
+          Rezekne              31/03/2026      2    200.50 TRAIN  \r\n107 Kuldiga
+          \             01/03/2026      4    150.00 BUS    \r\n108 Liepaja              01/03/2026
+          \     4    150.00 BOAT   \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 25. save after add
+      id: 25-save-after-add
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 25. save after add
+        command: java Main
+        input: "print\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      5    150.50 TRAIN  \r\n102 Rome                 15/05/2021
+          \     7    300.00 BUS    \r\n103 Hamburg              15/09/2021     10
+          \   500.50 PLANE  \r\n104 Helsinki             10/06/2021      3    250.00
+          BOAT   \r\n105 New York             16/08/2021      5   1000.00 PLANE  \r\n106
+          Rezekne              31/03/2026      2    200.50 TRAIN  \r\n107 Kuldiga
+          \             01/03/2026      4    150.00 BUS    \r\n108 Liepaja              01/03/2026
+          \     4    150.00 BOAT   \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 26. edit field count
+      id: 26-edit-field-count
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 26. edit field count
+        command: java Main
+        input: "edit 101;;;;BUS\r\nedit 101;;;;;100;BUS\r\nexit"
+        expected-output: "wrong field count\r\nwrong field count"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 27. edit id
+      id: 27-edit-id
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 27. edit id
+        command: java Main
+        input: "edit 110;;;;;BUS\r\nexit"
+        expected-output: wrong id
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 28. edit vechicle
+      id: 28-edit-vechicle
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 28. edit vechicle
+        command: java Main
+        input: "edit 101;;;;;XXX\r\nexit"
+        expected-output: wrong vehicle
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 29. edit price
+      id: 29-edit-price
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 29. edit price
+        command: java Main
+        input: "edit 101;;;;x;BUS\r\nexit"
+        expected-output: wrong price
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 30. edit date
+      id: 30-edit-date
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 30. edit date
+        command: java Main
+        input: "edit 101;;15/15/2027;;;BUS\r\nexit"
+        expected-output: wrong date
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 31. edit days
+      id: 31-edit-days
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 31. edit days
+        command: java Main
+        input: "edit 101;;;x;;BUS\r\nexit"
+        expected-output: wrong day count
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: 32. edit change
+      id: 32-edit-change
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 32. edit change
+        command: java Main
+        input: "edit 101;;;2;70;BUS\r\nedit 104;kraslava;;;;BUS\r\nprint\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      2     70.00 BUS    \r\n102 Rome                 15/05/2021
+          \     7    300.00 BUS    \r\n103 Hamburg              15/09/2021     10
+          \   500.50 PLANE  \r\n104 Kraslava             10/06/2021      3    250.00
+          BUS    \r\n105 New York             16/08/2021      5   1000.00 PLANE  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 2
+    - name: 33. save after edit
+      id: 33-save-after-edit
+      uses: education/autograding-io-grader@v1
+      with:
+        test-name: 33. save after edit
+        command: java Main
+        input: "print\r\nexit"
+        expected-output: "------------------------------------------------------------\r\nID
+          \ City                 Date         Days     Price Vehicle\r\n------------------------------------------------------------\r\n101
+          Daugavpils           03/07/2021      2     70.00 BUS    \r\n102 Rome                 15/05/2021
+          \     7    300.00 BUS    \r\n103 Hamburg              15/09/2021     10
+          \   500.50 PLANE  \r\n104 Kraslava             10/06/2021      3    250.00
+          BUS    \r\n105 New York             16/08/2021      5   1000.00 PLANE  \r\n------------------------------------------------------------"
+        comparison-method: contains
+        timeout: 1
+        max-score: 1
+    - name: Autograding Reporter
+      uses: education/autograding-grading-reporter@v1
+      env:
+        1-SETUP_RESULTS: "${{steps.1-setup.outputs.result}}"
+        2-PRINT_RESULTS: "${{steps.2-print.outputs.result}}"
+        3-FIND-ERR_RESULTS: "${{steps.3-find-err.outputs.result}}"
+        4-FIND-NUMBER_RESULTS: "${{steps.4-find-number.outputs.result}}"
+        5-AVG_RESULTS: "${{steps.5-avg.outputs.result}}"
+        6-SORT_RESULTS: "${{steps.6-sort.outputs.result}}"
+        7-PRINT2_RESULTS: "${{steps.7-print2.outputs.result}}"
+        8-FING-INT_RESULTS: "${{steps.8-fing-int.outputs.result}}"
+        9-FIND-FLOAT1_RESULTS: "${{steps.9-find-float1.outputs.result}}"
+        10-AVG_RESULTS: "${{steps.10-avg.outputs.result}}"
+        11-SORT-2_RESULTS: "${{steps.11-sort-2.outputs.result}}"
+        12-DEL-WRONG_RESULTS: "${{steps.12-del-wrong.outputs.result}}"
+        13-DEL-LAST_RESULTS: "${{steps.13-del-last.outputs.result}}"
+        14-DEL-TWO-RECORD_RESULTS: "${{steps.14-del-two-record.outputs.result}}"
+        15-DEL-SAVE_RESULTS: "${{steps.15-del-save.outputs.result}}"
+        16-ADD-FIELD-COUNT_RESULTS: "${{steps.16-add-field-count.outputs.result}}"
+        17-ADD-ID_RESULTS: "${{steps.17-add-id.outputs.result}}"
+        19-ADD-DATE_RESULTS: "${{steps.19-add-date.outputs.result}}"
+        20-ADD-DAY-COUNT_RESULTS: "${{steps.20-add-day-count.outputs.result}}"
+        21-ADD-PRICE_RESULTS: "${{steps.21-add-price.outputs.result}}"
+        22-ADD-VECHICLE_RESULTS: "${{steps.22-add-vechicle.outputs.result}}"
+        23-ADD-ONE-RECORD_RESULTS: "${{steps.23-add-one-record.outputs.result}}"
+        24-ADD-TWO-RECORDS-SAVE_RESULTS: "${{steps.24-add-two-records-save.outputs.result}}"
+        25-SAVE-AFTER-ADD_RESULTS: "${{steps.25-save-after-add.outputs.result}}"
+        26-EDIT-FIELD-COUNT_RESULTS: "${{steps.26-edit-field-count.outputs.result}}"
+        27-EDIT-ID_RESULTS: "${{steps.27-edit-id.outputs.result}}"
+        28-EDIT-VECHICLE_RESULTS: "${{steps.28-edit-vechicle.outputs.result}}"
+        29-EDIT-PRICE_RESULTS: "${{steps.29-edit-price.outputs.result}}"
+        30-EDIT-DATE_RESULTS: "${{steps.30-edit-date.outputs.result}}"
+        31-EDIT-DAYS_RESULTS: "${{steps.31-edit-days.outputs.result}}"
+        32-EDIT-CHANGE_RESULTS: "${{steps.32-edit-change.outputs.result}}"
+        33-SAVE-AFTER-EDIT_RESULTS: "${{steps.33-save-after-edit.outputs.result}}"
+      with:
+        runners: 1-setup,2-print,3-find-err,4-find-number,5-avg,6-sort,7-print2,8-fing-int,9-find-float1,10-avg,11-sort-2,12-del-wrong,13-del-last,14-del-two-record,15-del-save,16-add-field-count,17-add-id,19-add-date,20-add-day-count,21-add-price,22-add-vechicle,23-add-one-record,24-add-two-records-save,25-save-after-add,26-edit-field-count,27-edit-id,28-edit-vechicle,29-edit-price,30-edit-date,31-edit-days,32-edit-change,33-save-after-edit
